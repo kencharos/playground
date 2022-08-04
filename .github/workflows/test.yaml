@@ -1,5 +1,4 @@
-# 有効なトークンを持っているが、サブスクリプションが切れたユーザーの復元のための応急処置ワークフロー
-name: Retry Convert/Transcription Task by CallResultId
+name: test
 
 on:
   workflow_dispatch:
