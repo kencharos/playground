@@ -20,8 +20,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: echo
         run: |
-          echo ${{ secrets.COMMON }} > hoge.txt
-          echo ${{ secrets.E_VALUE }} >> hoge.txt
+          echo ${{ secrets.COMMON }} | cut -c 1-2  > hoge.txt
+          echo ${{ secrets.E_VALUE }} | cut -c 1-2 >> hoge.txt
           cat hoge.txt
       
   
