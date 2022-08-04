@@ -1,0 +1,27 @@
+# 有効なトークンを持っているが、サブスクリプションが切れたユーザーの復元のための応急処置ワークフロー
+name: Retry Convert/Transcription Task by CallResultId
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: env
+        required: true
+        default: test
+        type: choice
+        options:
+          - test
+          - prod
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: echo
+        run: |
+          echo ${{ secrets.COMMON }}
+          echo ${{ secrets.E_VALUE }}
+      
+  
