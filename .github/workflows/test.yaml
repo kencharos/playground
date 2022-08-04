@@ -5,8 +5,7 @@ on:
     inputs:
       env:
         description: env
-        required: true
-        default: test
+        required: false
         type: choice
         options:
           - test
