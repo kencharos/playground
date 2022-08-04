@@ -6,10 +6,7 @@ on:
       env:
         description: env
         required: false
-        type: choice
-        options:
-          - test
-          - prod
+        type: input
 
 jobs:
   setup:
