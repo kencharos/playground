@@ -9,7 +9,13 @@ on:
         type: input
 
 jobs:
-  setup:
+  jon1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: |
+          echo hi
+  envjon:
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
