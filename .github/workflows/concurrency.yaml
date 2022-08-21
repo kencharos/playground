@@ -52,3 +52,12 @@ jobs:
         run: |
           sleep ${{inputs.time}}
           echo hi
+  job30:
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: test-3
+    steps:
+      - name: echo
+        run: |
+          sleep ${{inputs.time}}
+          echo hi
