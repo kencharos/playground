@@ -1,6 +1,7 @@
 name: test
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       env:
@@ -14,7 +15,7 @@ jobs:
     steps:
       - name: echo
         run: |
-          echo hi
+          echo -${{ github.event.number }}--
   envjon:
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
