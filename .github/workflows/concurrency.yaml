@@ -34,7 +34,7 @@ jobs:
   job20:
     runs-on: ubuntu-latest
     concurrency: 
-      group: test
+      group: test-1
       cancel-in-progress: true
     steps:
       - name: echo
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [job20]
     concurrency: 
-      group: test
+      group: test-1
       cancel-in-progress: false
     steps:
       - name: echo
