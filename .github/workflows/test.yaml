@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: echo
         run: |
-          echo -${{ 1 == 1 && github.event.number }}--
+          echo -${{ 1 == 1 && github.event.number }}----
   envjon:
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
