@@ -61,3 +61,47 @@ jobs:
         run: |
           sleep ${{inputs.time}}
           echo hi
+
+  job40:
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: test
+      cancel-in-progress: true
+    steps:
+      - name: echo
+        run: |
+          sleep ${{inputs.time}}
+          echo hi
+  job41:
+    runs-on: ubuntu-latest
+    needs: [job40]
+    concurrency: 
+      group: test
+      cancel-in-progress: true
+    steps:
+      - name: echo
+        run: |
+          sleep ${{inputs.time}}
+          echo hi
+
+  job50:
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: test
+      cancel-in-progress: false
+    steps:
+      - name: echo
+        run: |
+          sleep ${{inputs.time}}
+          echo hi
+  job51:
+    runs-on: ubuntu-latest
+    needs: [job50]
+    concurrency: 
+      group: test
+      cancel-in-progress: false
+    steps:
+      - name: echo
+        run: |
+          sleep ${{inputs.time}}
+          echo hi
