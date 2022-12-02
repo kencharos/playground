@@ -7,8 +7,7 @@ on:
 
 
 jobs:
-  changes:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo ${{ fromJSON(github.event) }}
+      - uses: crazy-max/ghaction-dump-context@v1
