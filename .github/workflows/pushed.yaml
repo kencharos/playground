@@ -1,0 +1,12 @@
+name: pushed
+on:
+  push:
+    branches: [main]
+
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo ${{ github.event }}
