@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: echo
         run: |
+          echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
           brew install suzuki-shunsuke/tfcmt/tfcmt
           brew install suzuki-shunsuke/github-comment/github-comment
           echo $PATH
