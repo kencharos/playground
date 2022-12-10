@@ -15,14 +15,12 @@ jobs:
     steps:
       - name: echo
         run: |
-          echo -${{ (1 == 1 && github.event.number ) || '' }}----
-  envjon:
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.env }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: echo
-        run: |
-          ./.github/test.sh
+          brew install suzuki-shunsuke/tfcmt/tfcmt
+          brew install suzuki-shunsuke/github-comment/github-comment
+          echo $PATH
+          which tfcmt
+          which github-comment
+          
+
       
   
