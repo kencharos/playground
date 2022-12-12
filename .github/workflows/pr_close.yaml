@@ -16,7 +16,8 @@ jobs:
         with:
           ref: ${{ github.sha }}
       - run: 
-          echo "aaaaa" >> hoge.txt
+          cat hoge.txt
+          echo "aaaaa-${{ github.event.pull_request.number }}" >> hoge.txt
           git add .
          　　git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
