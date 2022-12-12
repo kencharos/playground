@@ -20,7 +20,7 @@ jobs:
           cat hoge.txt
           echo "aaaaa-${{ github.event.pull_request.number }}" >> hoge.txt
           git add .
-         　　git config --local user.name "github-actions[bot]"
+          git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git pull 
           git commit -m "[skip ci] PR-${{ github.event.pull_request.number }}"
