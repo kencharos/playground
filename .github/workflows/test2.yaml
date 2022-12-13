@@ -11,6 +11,7 @@ jobs:
   jon1:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - name: Run the Action
       uses: devops-infra/action-pull-request@v0.5.3
       with:
