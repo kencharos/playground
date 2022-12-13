@@ -34,6 +34,8 @@ jobs:
       - name: work branch init
         run: |
           git fetch
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b ${{ github.event.inputs.branch }}
 
       - name: tag detection
