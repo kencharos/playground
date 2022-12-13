@@ -3,112 +3,88 @@ name: concurrency test
 on:
   workflow_dispatch:
     inputs:
-      time:
-        description: time
+      branch:
         required: true
         type: input
-        default: "60"
-
-env:
-  CONC_KEY: ${{ github.head_ref || github.run_id }}
-
-#concurrency: 
-#  group: ${{ env.CONC_KEY }}-hoge
-#  cancel-in-progress: true
+      tag:
+        required: true
+        type: input
+      app:
+        required: true
+        type: input
 
 jobs:
-  job10:
+  ready_release:
+    name: ready_release
     runs-on: ubuntu-latest
-    concurrency: 
-      group: test
-      cancel-in-progress: false
+    timeout-minutes: 30
     steps:
-      - name: echo
+      # setup 
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: check tag is exsits
         run: |
-          sleep ${{inputs.time}}
-          echo hi
-  job11:
-    runs-on: ubuntu-latest
-    needs: [job10]
-    concurrency: 
-      group: test
-      cancel-in-progress: true
-    steps:
-      - name: echo
+          for item in $(git ls-remote --tags -q); do
+            if [ "refs/tags/${{ github.event.inputs.tag}}}" = "$item" ]; then
+              echo "tag ${{ github.event.inputs.tag}} is already exists"
+              exit 2
+            fi
+          done
+      - name: work branch init
         run: |
-          sleep ${{inputs.time}}
-          echo hi
-  job20:
-    runs-on: ubuntu-latest
-    concurrency: 
-      group: test-1
-      cancel-in-progress: true
-    steps:
-      - name: echo
-        run: |
-          sleep ${{inputs.time}}
-          echo hi
-  job21:
-    runs-on: ubuntu-latest
-    needs: [job20]
-    concurrency: 
-      group: test-1
-      cancel-in-progress: false
-    steps:
-      - name: echo
-        run: |
-          sleep ${{inputs.time}}
-          echo hi
-  job30:
-    runs-on: ubuntu-latest
-    concurrency: 
-      group: test-3-${{env.CONC_KEY}}
-    steps:
-      - name: echo
-        run: |
-          sleep ${{inputs.time}}
-          echo hi
+          git fetch
+          git checkout -b ${{ github.event.inputs.branch }}
 
-  job40:
-    runs-on: ubuntu-latest
-    #concurrency: 
-    #  group: test-4
-    #  cancel-in-progress: true
-    steps:
-      - name: echo
+      - name: tag detection
         run: |
-          sleep ${{inputs.time}}
-          echo hi
-  job41:
-    runs-on: ubuntu-latest
-    needs: [job40]
-    #concurrency: 
-    #  group: test-4
-    #  cancel-in-progress: true
-    steps:
-      - name: echo
-        run: |
-          sleep ${{inputs.time}}
-          echo hi
+          base=$(pwd)
+          touch ${base}/change.txt
+          label=""
 
-  job50:
-    runs-on: ubuntu-latest
-    concurrency: 
-      group: test-5-${{env.CONC_KEY}}
-      cancel-in-progress: false
-    steps:
-      - name: echo
+          for app in $(echo '${{ github.event.inputs.app}}' | tr , " "); do
+
+            label="${label},apps/${app}"
+            echo $(date) >> change.txt
+            echo $(date) >> ${app}.txt
+            git add ${app}.txt
+          done
+          
+
+          echo 'APPS_CHANGE<<EOF' >> $GITHUB_ENV
+          cat ${base}/change.txt >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+          echo 'APPS_LABEL<<EOF' >> $GITHUB_ENV
+          echo ${label} | cut -c 2- >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+          rm ${base}/change.txt
+      - name: push branch
         run: |
-          sleep ${{inputs.time}}
-          echo hi
-  job51:
-    runs-on: ubuntu-latest
-    needs: [job50]
-    concurrency: 
-      group: test-5-${{env.CONC_KEY}}
-      cancel-in-progress: false
-    steps:
-      - name: echo
-        run: |
-          sleep ${{inputs.time}}
-          echo hi
+          if ! git diff --exit-code --quiet --cached
+          then
+            # changed
+            git commit -m "[${{ github.event.inputs.tag}}] test"
+          else
+            # no change. make empty commit
+            git commit -m "[${{ github.event.inputs.tag}}] test" --allow-empty
+          fi
+
+          git push -u origin ${{ github.event.inputs.branch }}
+      - name: make pull request
+        uses: devops-infra/action-pull-request@v0.5.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: ${{ github.event.inputs.branch }}
+          target_branch: main
+          title: PR for ${{ github.event.inputs.branch }}
+          body: |
+              [${{ github.event.inputs.tag}}] test
+              ## changed apps
+              ${{ env.APPS_CHANGE }}
+          label: ${{ env.APPS_LABEL }}
+          reviewer: ${{ env.PR_REVIEWERS }}
+          get_diff: false
+          allow_no_diff: true
+
+
