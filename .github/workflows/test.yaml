@@ -43,6 +43,7 @@ jobs:
         with:
             commit-message: Update test
             title: Update test2
+            assignees: kencharos
             delete-branch: true
             base: main
             labels: ${{ env.LABEL }}
