@@ -11,17 +11,36 @@ jobs:
   jon1:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        ref: branch3
-        fetch-depth: 0
-    - name: Run the Action
-      uses: devops-infra/action-pull-request@v0.5.3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        source_branch: branch3
-        target_branch: main
-        title: My pull request
-        body: "**Automated pull request**"
-        label: enhancement
-        get_diff: true
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Edit image tag then push
+        run: |
+          git fetch
+          if [[ -n $(git branch -a | grep "remotes/origin/${{ github.event.client_payload.branch }}" ) ]]; then
+            # branch exists
+            git checkout ${{ github.event.client_payload.branch }}
+            git pull
+          else
+            # no branch
+            git checkout -b ${{ github.event.client_payload.branch }}
+            git push -u origin ${{ github.event.client_payload.branch }}
+          fi
+          
+          echo $(date) >> ttt.txt
+          
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+
+          git commit -m "fix"
+          git push
+      - name: make/update PullRequest
+        uses: devops-infra/action-pull-request@v0.5.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: ${{ github.event.client_payload.branch }}
+          target_branch: develop
+          title: Make Preview PR for ${{ github.event.client_payload.branch }}
+          body: "${{ github.event.client_payload.branch }}"
+          label: ${{ github.event.client_payload.label }}
+          get_diff: false
