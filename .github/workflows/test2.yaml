@@ -19,7 +19,6 @@ jobs:
         with:
             commit-message: Update test
             title: Update test3
-            delete-branch: true
             base: main
             labels: hoge
             body: |
