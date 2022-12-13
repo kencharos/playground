@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: | 
-          echo ${{ github.event.client_payload }}
-          echo '${{ github.event.client_payload }}' | jq -rc
+          echo ${{ toJSON(github.event.client_payload) }}
+          echo '${{ toJSON(github.event.client_payload) }}' | jq -rc
           
           
