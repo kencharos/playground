@@ -11,16 +11,12 @@ jobs:
   jon1:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: main
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-            commit-message: Update test
-            title: Update test3
-            labels: hoge
-            body: |
-              - Dependency updates
-  
-            branch: branch3
+    - name: Run the Action
+      uses: devops-infra/action-pull-request@v0.5.3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        source_branch: branch3
+        target_branch: main
+        title: My pull request
+        body: "**Automated pull request**"
+        label: enhancement
