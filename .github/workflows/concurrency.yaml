@@ -26,7 +26,7 @@ jobs:
       - name: check tag is exsits
         run: |
           for item in $(git ls-remote --tags -q); do
-            if [ "refs/tags/${{ github.event.inputs.tag}}}" = "$item" ]; then
+            if [ "refs/tags/${{ github.event.inputs.tag}}" = "$item" ]; then
               echo "tag ${{ github.event.inputs.tag}} is already exists"
               exit 2
             fi
