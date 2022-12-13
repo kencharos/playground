@@ -19,7 +19,6 @@ jobs:
         with:
             commit-message: Update test
             title: Update test3
-            base: main
             labels: hoge
             body: |
               - Dependency updates
